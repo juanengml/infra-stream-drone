@@ -2,12 +2,13 @@ import pika
 
 
 # Configuração da conexão com o RabbitMQ
-connection = pika.BlockingConnection(pika.ConnectionParameters('ENDPOINT RABBITMQ'))
+rabbitmq_host = "endpoint-rabbitmq"
+connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_host))
 channel = connection.channel()
 
 # Declarar a fila a partir da qual iremos consumir as mensagens
 queue_name = 'video-queue'
-channel.queue_declare(queue=queue_name, durable=True)
+#channel.queue_declare(queue=queue_name, durable=True)
 
 # Função de callback para processar as mensagens recebidas
 def callback(ch, method, properties, body):

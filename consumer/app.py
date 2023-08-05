@@ -1,11 +1,11 @@
 from flask import Flask, render_template, Response
 import cv2
-from stream import CameraStream, generate_noise_frame
+from stream import CameraStream, generate_noise_frame, add_timestamp_to_frame
 app = Flask(__name__)
 
 # Configurações do RabbitMQ
-rabbitmq_host = 'ENDPOINT RABBITMQ'
-queue_name = 'video-queue'#
+rabbitmq_host = "endpoint-rabbitmq"
+queue_name = 'video-queue-dev'#
 
 camera = CameraStream(rabbitmq_host, queue_name)
 
@@ -14,16 +14,14 @@ def gen_frames():  # generate frame by frame from camera
     while True:
         # Capture frame-by-frame
         success, frame = camera.read()  # read the camera frame
-        if not success:
+        if success == False:
             frame = generate_noise_frame()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
         else:
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
+            frame_buffer = add_timestamp_to_frame(frame)
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
-
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame_buffer + b'\r\n')  # concat frame one by one and show result
 
 @app.route('/video_feed')
 def video_feed():
