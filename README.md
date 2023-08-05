@@ -15,7 +15,7 @@ Antes de começar, certifique-se de ter instalado o Docker e o Docker Compose na
 1. Clone este repositório em sua máquina local:
 
 ```bash
-git clone https://github.com/seu-usuario/infra-stream-drone.git
+git clone https://github.com/juanengml/infra-stream-drone.git
 cd infra-stream-drone
 ```
 
